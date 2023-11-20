@@ -1,0 +1,45 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: sans-serif;
+  font-size: 1rem;
+  color: white;
+}
+
+body {
+  background-color: #212f3d;
+}
+
+#root {
+    padding: 1rem;
+}
+
+.div-app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: green;
+}
+
+.form-app {
+    border-color: blue;
+}
+
+.input-note {
+  /* padding: 1rem; */
+}
+
+.buttonForm {
+  font-size: 15px;
+  color: white;
+  background-color: #1482f0;
+  padding: 7px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+}
