@@ -3,6 +3,7 @@
  * Class TodoView
  */
 
+import { todo } from '../models/todo.models';
 import '../styles.css';
 export class TodoView {
     public app: HTMLElement;
@@ -15,6 +16,8 @@ export class TodoView {
     public input: HTMLInputElement;
     public divButton: HTMLElement;
     public buttonSubmit: HTMLElement;
+    public list: HTMLElement;
+    public todos: todo[];
     constructor() {
         this.app = document.getElementById('root');
         this.root = this.createElement('div', 'div-app');
@@ -32,8 +35,10 @@ export class TodoView {
         this.divButton.append(this.buttonSubmit);
         this.divControl.append(this.divInput, this.divButton);
         this.form.append(this.titleApp, this.divControl);
+        // this.list = this.createElement('li', 'listTODOS');
         this.root.append(this.form);
         this.app.append(this.root);
+        this.todos = (JSON.parse(localStorage.getItem('todos')) || []);
     }
 
     get _inputValue() {
@@ -43,7 +48,6 @@ export class TodoView {
     _resetInput() {
         return this.input.value = '';
     }
-
 
     createElement(elemnt: string, className: string) {
         const newElement = document.createElement(elemnt);
@@ -70,7 +74,16 @@ export class TodoView {
 
 
     //Display TODOS
-    displayTodo() {
+    displayTodo(todos: todo[]) {
+        if (todos) {
+            const list = this.createElement('li', 'listTodos');
+            todos.forEach(e => {
+                let li = this.createElement('li', 'todoli');
+                li.innerHTML = e.text;
+                list.append(li);
+            })
 
+            this.root.append(list);
+        }
     }
 }

@@ -11,8 +11,13 @@ export class TodoService {
     }
 
     _commit(todos: todo[]){
-       console.log({todos});
        localStorage.setItem('todos', JSON.stringify(todos));
+       this.bindListChange();
+    }
+
+    bindListChange(handle: Function = () => {}){
+        console.log('bindListChange');
+        handle(this.todos);
     }
 
     addTodo(text: ModelTodo) {

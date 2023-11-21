@@ -15,7 +15,12 @@ export class TodoController {
         this.service = service;
         this.view = view;
 
+        this.service.bindListChange(this.handleDisplay);
         this.view.bindSubmitForm(this.handleAddTodo);
+    }
+
+    handleDisplay = (todos: todo[]) => {
+        this.view.displayTodo(todos);
     }
 
     handleAddTodo = (text: ModelTodo) => {

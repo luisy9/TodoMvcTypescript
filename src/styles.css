@@ -43,3 +43,12 @@ body {
   border: none;
   cursor: pointer;
 }
+
+/* List Todos */
+.listTodos {
+  list-style: none;
+}
+
+.todoli {
+  padding: 1rem;
+}
