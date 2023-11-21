@@ -4,18 +4,18 @@
  */
 
 export interface todo {
-    text: string,
-    complete?: boolean
+    text: string;
+    complete: boolean;
 }
 
 export class ModelTodo {
     public id: string;
     public text: string;
-    public complete?: boolean;
+    public complete: boolean;
 
-    constructor({ text, complete }: todo = {
+    constructor({ text, complete = false }: todo = {
         text: '',
-        complete: false
+        complete: false,
     }) {
         this.id = this.generateId();
         this.text = text;

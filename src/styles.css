@@ -15,23 +15,23 @@ body {
 }
 
 #root {
-    padding: 1rem;
+  padding: 1rem;
 }
 
 .div-app {
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
   background-color: green;
 }
 
-.form-app {
-    border-color: blue;
+.div-control {
+  display: flex;
+  justify-content: space-between;
 }
 
 .input-note {
-  /* padding: 1rem; */
+  padding: 5px 10px;
 }
 
 .buttonForm {

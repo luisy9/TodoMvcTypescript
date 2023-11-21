@@ -11,7 +11,9 @@ export class TodoView {
     public form: HTMLElement;
     public divForm: HTMLElement;
     public divControl: HTMLElement;
+    public divInput: HTMLElement;
     public input: HTMLInputElement;
+    public divButton: HTMLElement;
     public buttonSubmit: HTMLElement;
     constructor() {
         this.app = document.getElementById('root');
@@ -20,18 +22,26 @@ export class TodoView {
         this.titleApp = this.createElement('h1', 'titleApp');
         this.titleApp.textContent = 'App Todo';
         this.divControl = this.createElement('div', 'div-control');
+        this.divInput = this.createElement('div', 'div-input');
         this.input = this.createElement('input', 'input-note') as HTMLInputElement;
         this.input.type = 'text';
+        this.divInput.append(this.input);
+        this.divButton = this.createElement('div', 'div-button');
         this.buttonSubmit = this.createElement('button', 'buttonForm');
         this.buttonSubmit.textContent = 'Submit';
-        this.divControl.append(this.input, this.buttonSubmit);
+        this.divButton.append(this.buttonSubmit);
+        this.divControl.append(this.divInput, this.divButton);
         this.form.append(this.titleApp, this.divControl);
         this.root.append(this.form);
         this.app.append(this.root);
     }
 
-    get _inputValue(){
+    get _inputValue() {
         return this.input.value;
+    }
+
+    _resetInput() {
+        return this.input.value = '';
     }
 
 
@@ -43,10 +53,24 @@ export class TodoView {
         return newElement;
     }
 
-    submitForm(handler: Function = () => {}) {
+    inputTodo() {
+        this.input.addEventListener('change', (event) => {
+            console.log(event.target);
+        })
+    }
+
+    //Pasamos los datos de el form para crear un Todo
+    bindSubmitForm(handler: Function = () => { }) {
         this.form.addEventListener('submit', event => {
             event.preventDefault();
-            console.log(`${this.input.value} Hola`);
+            handler({ text: this._inputValue });
+            this._resetInput();
         })
+    }
+
+
+    //Display TODOS
+    displayTodo() {
+
     }
 }
