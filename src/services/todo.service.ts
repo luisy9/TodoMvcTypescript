@@ -4,24 +4,43 @@
  */
 import { ModelTodo, todo } from '../models/todo.models';
 export class TodoService {
-    public todos: todo[];
+    public todos: ModelTodo[];
+    private onListChanged: Function;
     constructor() {
         const todos: todo[] = JSON.parse(localStorage.getItem('todos')) || [];
         this.todos = todos.map(e => new ModelTodo(e));
     }
 
-    _commit(todos: todo[]){
-       localStorage.setItem('todos', JSON.stringify(todos));
-       this.bindListChange();
+    bindListChange(handle: Function) {
+        this.onListChanged = handle;
     }
 
-    bindListChange(handle: Function = () => {}){
-        console.log('bindListChange');
-        handle(this.todos);
+    _commit(todos: todo[]) {
+        this.onListChanged(todos);
+        localStorage.setItem('todos', JSON.stringify(todos));
     }
 
-    addTodo(text: ModelTodo) {
+    addTodo(text: todo) {
         this.todos.push(new ModelTodo(text));
+        this._commit(this.todos);
+    }
+
+    deleteTodo(_id: string) {
+        this.todos = this.todos.filter(e => e.id != _id);
+        this._commit(this.todos);
+    }
+
+    updateTodos(_id: string) {
+
+    }
+
+    toggleTodos(id: string) {
+        this.todos = this.todos.map(e => {
+            if (e.id === id) {
+                return new ModelTodo({ ...e, complete: !e.complete })
+            }
+            return e;
+        });
         this._commit(this.todos);
     }
 }

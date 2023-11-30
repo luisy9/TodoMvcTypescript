@@ -3,7 +3,7 @@
  * Class TodoView
  */
 
-import { todo } from '../models/todo.models';
+import { ModelTodo, todo } from '../models/todo.models';
 import '../styles.css';
 export class TodoView {
     public app: HTMLElement;
@@ -17,7 +17,10 @@ export class TodoView {
     public divButton: HTMLElement;
     public buttonSubmit: HTMLElement;
     public list: HTMLElement;
+    public ul: HTMLElement;
     public todos: todo[];
+    public buttonDelete: HTMLElement;
+
     constructor() {
         this.app = document.getElementById('root');
         this.root = this.createElement('div', 'div-app');
@@ -35,7 +38,8 @@ export class TodoView {
         this.divButton.append(this.buttonSubmit);
         this.divControl.append(this.divInput, this.divButton);
         this.form.append(this.titleApp, this.divControl);
-        // this.list = this.createElement('li', 'listTODOS');
+        this.ul = this.createElement('ul', 'listTodos');
+        this.list = this.createElement('li', 'listTODOS');
         this.root.append(this.form);
         this.app.append(this.root);
         this.todos = (JSON.parse(localStorage.getItem('todos')) || []);
@@ -67,23 +71,75 @@ export class TodoView {
     bindSubmitForm(handler: Function = () => { }) {
         this.form.addEventListener('submit', event => {
             event.preventDefault();
-            handler({ text: this._inputValue });
-            this._resetInput();
+            if (this._inputValue.length > 0) {
+                handler({ text: this._inputValue });
+                this._resetInput();
+            }
         })
     }
 
 
     //Display TODOS
-    displayTodo(todos: todo[]) {
-        if (todos) {
-            const list = this.createElement('li', 'listTodos');
-            todos.forEach(e => {
-                let li = this.createElement('li', 'todoli');
-                li.innerHTML = e.text;
-                list.append(li);
-            })
-
-            this.root.append(list);
+    displayTodo(todos: ModelTodo[]) {
+        console.log(todos)
+        while (this.list.firstChild) {
+            this.list.removeChild(this.list.firstChild);
         }
+
+        if (todos.length > 0) {
+            todos.forEach(e => {
+                const divUl = this.createElement('div', 'divUl');
+                divUl.id = e.id;
+                let checkBox = this.createElement('input', 'checkBoxStyle') as HTMLElement | any;
+                checkBox.type = 'checkbox';
+                checkBox.id = e.id;
+                let ul = this.createElement('ul', 'listTodos');
+                ul.textContent = e.text;
+                ul.contentEditable = 'true';
+                let buttonDelete = this.createElement('button', 'buttonDelete');
+                buttonDelete.innerText = 'delete';
+                buttonDelete.id = e.id;
+                buttonDelete.style.paddingTop = "100";
+                divUl.append(checkBox, ul, buttonDelete);
+                this.list.append(divUl);
+                if (e.complete === true) {
+                    ul.classList.add('divChecked');
+                } else {
+                    ul.classList.remove('divChecked');
+                }
+            })
+            this.app.append(this.list);
+        }
+    }
+
+    bindDeleteTodo(handle: Function) {
+        this.list.addEventListener('click', (event) => {
+            if ((event.target as any).className === 'buttonDelete') {
+                const _id = (event.target as any).id;
+                handle(_id);
+            }
+        })
+    }
+
+    bindUpdateTodos(handle: Function) {
+        this.list.addEventListener('click', (event) => {
+            const ulEditable = (event.target as any).className === 'listTodos';
+            if (ulEditable) {
+                event.target.addEventListener('input', (event) => {
+                    let valueEditable = document.querySelector('ul').innerText;
+                    handle(valueEditable);
+                })
+            }
+        });
+    }
+
+    bindTodoChecked(handle: Function) {
+        this.list.addEventListener('change', (event) => {
+            const checkBox = (event.target as any).type === 'checkbox';
+            if (checkBox) {
+                const id = (event.target as any).parentElement.id;
+                handle(id);
+            }
+        })
     }
 }
