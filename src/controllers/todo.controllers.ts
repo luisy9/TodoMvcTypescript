@@ -36,8 +36,8 @@ export class TodoController {
         this.service.deleteTodo(_id);
     }
 
-    handleUpdateList = (_id: string) => {
-        this.service.updateTodos(_id);
+    handleUpdateList = (_id: number, todo: string) => {
+        this.service.updateTodos(_id, todo);
     }
 
     handleCheckTodo = (id: string) => {

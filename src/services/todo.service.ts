@@ -30,17 +30,23 @@ export class TodoService {
         this._commit(this.todos);
     }
 
-    updateTodos(_id: string) {
-
+    updateTodos(id: number, todo: string) {
+        const _id = id.toString();
+        this.todos = this.todos.map(e => {
+            if (e.id === _id) {
+                return new ModelTodo({ ...e, text: todo });
+            }
+            return e;
+        })
+        this._commit(this.todos);
     }
 
     toggleTodos(id: string) {
-        this.todos = this.todos.map(e => {
-            if (e.id === id) {
-                return new ModelTodo({ ...e, complete: !e.complete })
-            }
-            return e;
-        });
+        this.todos = this.todos.map(e =>
+            e.id === id ?
+                new ModelTodo({ ...e, complete: !e.complete }) :
+                e
+        );
         this._commit(this.todos);
     }
 }

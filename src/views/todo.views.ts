@@ -92,10 +92,13 @@ export class TodoView {
                 divUl.id = e.id;
                 let checkBox = this.createElement('input', 'checkBoxStyle') as HTMLElement | any;
                 checkBox.type = 'checkbox';
+                //si complete es false no esta marcado, si es true se marca
+                checkBox.checked = e.complete!;
                 checkBox.id = e.id;
                 let ul = this.createElement('ul', 'listTodos');
                 ul.textContent = e.text;
                 ul.contentEditable = 'true';
+                ul.id = e.id;
                 let buttonDelete = this.createElement('button', 'buttonDelete');
                 buttonDelete.innerText = 'delete';
                 buttonDelete.id = e.id;
@@ -113,7 +116,7 @@ export class TodoView {
     }
 
     bindDeleteTodo(handle: Function) {
-        this.list.addEventListener('click', (event) => {
+        this.list.addEventListener('click', (event: Event) => {
             if ((event.target as any).className === 'buttonDelete') {
                 const _id = (event.target as any).id;
                 handle(_id);
@@ -122,19 +125,15 @@ export class TodoView {
     }
 
     bindUpdateTodos(handle: Function) {
-        this.list.addEventListener('click', (event) => {
-            const ulEditable = (event.target as any).className === 'listTodos';
-            if (ulEditable) {
-                event.target.addEventListener('input', (event) => {
-                    let valueEditable = document.querySelector('ul').innerText;
-                    handle(valueEditable);
-                })
-            }
+        this.list.addEventListener('focusout', (event: Event) => {
+            const id = (event.target as HTMLElement).id;
+            const textEdit = (event.target as HTMLElement).innerText;
+            handle(id, textEdit);
         });
     }
 
     bindTodoChecked(handle: Function) {
-        this.list.addEventListener('change', (event) => {
+        this.list.addEventListener('change', (event: Event) => {
             const checkBox = (event.target as any).type === 'checkbox';
             if (checkBox) {
                 const id = (event.target as any).parentElement.id;
