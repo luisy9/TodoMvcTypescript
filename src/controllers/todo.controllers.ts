@@ -17,9 +17,9 @@ export class TodoController {
 
         this.service.bindListChange(this.onListChanged);
         this.view.bindSubmitForm(this.handleAddTodo);
-        this.view.bindDeleteTodo(this.handleDeleteTodo);
-        this.view.bindUpdateTodos(this.handleUpdateList);
-        this.view.bindTodoChecked(this.handleCheckTodo);
+        // this.view.bindDeleteTodo(this.handleDeleteTodo);
+        // this.view.bindUpdateTodos(this.handleUpdateList);
+        // this.view.bindTodoChecked(this.handleCheckTodo);
 
         this.onListChanged(this.service.todos);
     }
@@ -28,19 +28,19 @@ export class TodoController {
         this.view.displayTodo(todos);
     }
 
-    handleAddTodo = (text: ModelTodo) => {
-        this.service.addTodo(text);
+    handleAddTodo = (text: todo, categoria: todo) => {
+        this.service.addTodo(text, categoria);
     }
 
-    handleDeleteTodo = (_id: string) => {
-        this.service.deleteTodo(_id);
-    }
+    // handleDeleteTodo = (_id: string) => {
+    //     this.service.deleteTodo(_id);
+    // }
 
-    handleUpdateList = (_id: number, todo: string) => {
-        this.service.updateTodos(_id, todo);
-    }
+    // handleUpdateList = (_id: number, todo: string) => {
+    //     this.service.updateTodos(_id, todo);
+    // }
 
-    handleCheckTodo = (id: string) => {
-        this.service.toggleTodos(id);
-    }
+    // handleCheckTodo = (id: string) => {
+    //     this.service.toggleTodos(id);
+    // }
 }

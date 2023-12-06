@@ -5,6 +5,12 @@
 
 import { ModelTodo, todo } from '../models/todo.models';
 import '../styles.css';
+
+export interface categories {
+    id: number;
+    name: string;
+}
+
 export class TodoView {
     public app: HTMLElement;
     public root: HTMLElement;
@@ -20,6 +26,24 @@ export class TodoView {
     public ul: HTMLElement;
     public todos: todo[];
     public buttonDelete: HTMLElement;
+    public divButtonsControl: HTMLElement;
+    public buttonCategoria: HTMLInputElement;
+    public categorieName: string = '';
+    public categorias: categories[] = [
+        {
+            id: 1,
+            name: 'Programación'
+        },
+        {
+            id: 2,
+            name: 'Libros'
+        },
+        {
+            id: 3,
+            name: 'Deportes'
+        }
+    ]
+
 
     constructor() {
         this.app = document.getElementById('root');
@@ -36,21 +60,43 @@ export class TodoView {
         this.buttonSubmit = this.createElement('button', 'buttonForm');
         this.buttonSubmit.textContent = 'Submit';
         this.divButton.append(this.buttonSubmit);
+        this.divButtonsControl = this.createElement('div', 'divButtonsControls');
+        this.categorias.forEach(e => {
+            this.buttonCategoria = document.createElement('input');
+            this.buttonCategoria.type = 'checkbox';
+            this.buttonCategoria.checked = false;
+            this.buttonCategoria.classList.add('checkCategorie');
+            this.buttonCategoria.id = e.name as any;
+            let nameCategoria = document.createElement('li');
+            nameCategoria.classList.add('liCategorias');
+            nameCategoria.textContent = e.name;
+            nameCategoria.append(this.buttonCategoria);
+            this.divButtonsControl.append(nameCategoria);
+        })
         this.divControl.append(this.divInput, this.divButton);
-        this.form.append(this.titleApp, this.divControl);
+        this.form.append(this.titleApp, this.divControl, this.divButtonsControl);
         this.ul = this.createElement('ul', 'listTodos');
         this.list = this.createElement('li', 'listTODOS');
         this.root.append(this.form);
         this.app.append(this.root);
         this.todos = (JSON.parse(localStorage.getItem('todos')) || []);
+        this.bindDisplayButtonsCategory();
     }
 
     get _inputValue() {
         return this.input.value;
     }
 
+    get _categoryName() {
+        return this.categorieName;
+    }
+
     _resetInput() {
         return this.input.value = '';
+    }
+
+    _resetCheckBox() {
+        return this.buttonCategoria.checked = false;
     }
 
     createElement(elemnt: string, className: string) {
@@ -71,9 +117,29 @@ export class TodoView {
     bindSubmitForm(handler: Function = () => { }) {
         this.form.addEventListener('submit', event => {
             event.preventDefault();
-            if (this._inputValue.length > 0) {
-                handler({ text: this._inputValue });
+
+            if ((this._inputValue.length > 0) && (this._categoryName.length > 0)) {
+                handler({ text: this._inputValue, categoria: this._categoryName });
                 this._resetInput();
+                this._resetCheckBox();
+            }
+        })
+    }
+
+    bindDisplayButtonsCategory() {
+        this.divButtonsControl.addEventListener('click', (event) => {
+            const isInputCheck = (event.target as HTMLInputElement).type;
+            if (isInputCheck === 'checkbox') {
+                event.target.addEventListener('change', (eventCheck) => {
+                    const isChecked = (eventCheck.currentTarget as HTMLInputElement).checked;
+                    console.log(isChecked);
+                    if (isChecked) {
+                        const categorie = (event.target as HTMLInputElement).id;
+                        this.categorieName = categorie;
+                    } else {
+                        this.categorieName = '';
+                    }
+                })
             }
         })
     }
@@ -87,32 +153,87 @@ export class TodoView {
         }
 
         if (todos.length > 0) {
-            todos.forEach(e => {
-                const divUl = this.createElement('div', 'divUl');
-                divUl.id = e.id;
-                let checkBox = this.createElement('input', 'checkBoxStyle') as HTMLElement | any;
-                checkBox.type = 'checkbox';
-                //si complete es false no esta marcado, si es true se marca
-                checkBox.checked = e.complete!;
-                checkBox.id = e.id;
-                let ul = this.createElement('ul', 'listTodos');
-                ul.textContent = e.text;
-                ul.contentEditable = 'true';
-                ul.id = e.id;
-                let buttonDelete = this.createElement('button', 'buttonDelete');
-                buttonDelete.innerText = 'delete';
-                buttonDelete.id = e.id;
-                buttonDelete.style.paddingTop = "100";
-                divUl.append(checkBox, ul, buttonDelete);
-                this.list.append(divUl);
-                if (e.complete === true) {
-                    ul.classList.add('divChecked');
-                } else {
-                    ul.classList.remove('divChecked');
+            var tableContainer = document.createElement('div');
+            tableContainer.classList.add('tableContainer');
+            var tabla = document.createElement("table");
+            var tblBody = document.createElement("tbody");
+            var thead = document.createElement('thead');
+
+            //thead indices categorias           
+            let tr = document.createElement('tr');
+            thead.append(tr);
+            Object.keys(todos[0]).forEach(id => {
+                if (id != 'id') {
+                    let th = document.createElement('th');
+                    th.textContent = id;
+                    tr.appendChild(th);
                 }
             })
-            this.app.append(this.list);
+
+            let nuevoArrTodos = ['categoria', 'text', 'complete', 'id'];
+            let newObject = {};
+
+            todos.forEach(e => {
+                for (const index of nuevoArrTodos) {
+                    newObject[index] = e[index];
+                }
+            });
+
+            console.log(newObject);
+
+            todos.forEach((e, index) => {
+                let trBody = document.createElement('tr');
+                for (let clave in e) {
+                    if (clave != 'id') {
+                        let td = document.createElement('td');
+                        if (clave === 'complete') {
+                            let input = document.createElement('input') as HTMLInputElement;
+                            input.type = 'checkbox';
+                            input.checked = e[clave];
+                            td.append(input);
+                        } else {
+                            console.log(clave)
+                            td.textContent += e[clave];
+                        }
+                        trBody.append(td);
+                    }
+                }
+                tblBody.append(trBody);
+            })
+
         }
+
+        tabla.append(thead, tblBody);
+        tableContainer.append(tabla);
+        this.app.append(tableContainer);
+
+        // todos.forEach(e => {
+        //     const divUl = this.createElement('div', 'divUl');
+        //     divUl.id = e.id;
+        //     let categorieP = document.createElement('p');
+        //     categorieP.textContent = e.categoria;
+        //     let checkBox = this.createElement('input', 'checkBoxStyle') as HTMLElement | any;
+        //     checkBox.type = 'checkbox';
+        //     //si complete es false no esta marcado, si es true se marca
+        //     checkBox.checked = e.complete!;
+        //     checkBox.id = e.id;
+        //     let ul = this.createElement('ul', 'listTodos');
+        //     ul.textContent = e.text;
+        //     ul.contentEditable = 'true';
+        //     ul.id = e.id;
+        //     let buttonDelete = this.createElement('button', 'buttonDelete');
+        //     buttonDelete.innerText = 'delete';
+        //     buttonDelete.id = e.id;
+        //     buttonDelete.style.paddingTop = "100";
+        //     divUl.append(categorieP, checkBox, ul, buttonDelete);
+        //     this.list.append(divUl);
+        //     if (e.complete === true) {
+        //         ul.classList.add('divChecked');
+        //     } else {
+        //         ul.classList.remove('divChecked');
+        //     }
+        // })
+        // this.app.append(this.list);
     }
 
     bindDeleteTodo(handle: Function) {
