@@ -147,7 +147,6 @@ export class TodoView {
 
     //Display TODOS
     displayTodo(todos: ModelTodo[]) {
-        console.log(todos)
         while (this.list.firstChild) {
             this.list.removeChild(this.list.firstChild);
         }
@@ -159,29 +158,46 @@ export class TodoView {
             var tblBody = document.createElement("tbody");
             var thead = document.createElement('thead');
 
+
+            //Reeorganizar el array
+            //Array con los nuevos indices
+            let nuevoArrTodos = ['complete', 'categoria', 'text', 'id', 'delete'];
+
+            //Nuevo array donde se guardaran los objetos
+            let arr = [];
+
+            //Hacemos un foreach para recorrer cada objeto en el array por defecto de todos 'categoria', 'text', 'complete', 'id'
+            todos.forEach(e => {
+                //Objeto donde se guardara la informacion
+                let newObject = {};
+                //for of para coger el indice de el array estos indices seran 
+                for (const index of nuevoArrTodos) {
+                    //guardamos en el indice de nuevoArrTodos 
+                    //que es el que tendra newObject con el valor asignado
+                    //con el valor de los objetos de los todos, pero con siguiendo los indices de el array nuevoArrTodos
+                    newObject[index] = e[index];
+                }
+                //Crea un nuevo arr y agregamos los nuevos valores al 
+                //array de arr mas lo que tenia anteriormente y los guarda en arr.
+                arr = [...arr, newObject];
+            });
+
             //thead indices categorias           
             let tr = document.createElement('tr');
             thead.append(tr);
-            Object.keys(todos[0]).forEach(id => {
-                if (id != 'id') {
-                    let th = document.createElement('th');
-                    th.textContent = id;
-                    tr.appendChild(th);
+
+            Object.keys(arr[0]).forEach(index => {
+                if ((index != 'id')) {
+                    if (index != 'delete') {
+                        let th = document.createElement('th');
+                        th.textContent = index;
+                        tr.appendChild(th);
+                    }
                 }
             })
 
-            let nuevoArrTodos = ['categoria', 'text', 'complete', 'id'];
-            let newObject = {};
-
-            todos.forEach(e => {
-                for (const index of nuevoArrTodos) {
-                    newObject[index] = e[index];
-                }
-            });
-
-            console.log(newObject);
-
-            todos.forEach((e, index) => {
+            //Creamos la tabla
+            arr.forEach((e, index) => {
                 let trBody = document.createElement('tr');
                 for (let clave in e) {
                     if (clave != 'id') {
@@ -191,8 +207,14 @@ export class TodoView {
                             input.type = 'checkbox';
                             input.checked = e[clave];
                             td.append(input);
+                        }
+                        if (clave === 'delete') {
+                            let buttonDelete = document.createElement('button') as HTMLButtonElement;
+                            buttonDelete.type = 'submit';
+                            buttonDelete.textContent = 'delete';
+                            buttonDelete.classList.add('btn', 'btn-delete');
+                            td.append(buttonDelete);
                         } else {
-                            console.log(clave)
                             td.textContent += e[clave];
                         }
                         trBody.append(td);
