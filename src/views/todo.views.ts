@@ -23,6 +23,7 @@ export class TodoView {
     public divButton: HTMLElement;
     public buttonSubmit: HTMLElement;
     public list: HTMLElement;
+    public tableContainer: HTMLElement;
     public ul: HTMLElement;
     public todos: todo[];
     public buttonDelete: HTMLElement;
@@ -77,6 +78,7 @@ export class TodoView {
         this.form.append(this.titleApp, this.divControl, this.divButtonsControl);
         this.ul = this.createElement('ul', 'listTodos');
         this.list = this.createElement('li', 'listTODOS');
+        this.tableContainer = this.createElement('div', 'tableContainer');
         this.root.append(this.form);
         this.app.append(this.root);
         this.todos = (JSON.parse(localStorage.getItem('todos')) || []);
@@ -147,19 +149,19 @@ export class TodoView {
 
     //Display TODOS
     displayTodo(todos: ModelTodo[]) {
-        while (this.list.firstChild) {
-            this.list.removeChild(this.list.firstChild);
+        while (this.tableContainer.firstChild) {
+            this.tableContainer.removeChild(this.tableContainer.firstChild);
         }
 
         if (todos.length > 0) {
-            var tableContainer = document.createElement('div');
-            tableContainer.classList.add('tableContainer');
+            // var tableContainer = document.createElement('div');
+            // tableContainer.classList.add('tableContainer');
             var tabla = document.createElement("table");
             var tblBody = document.createElement("tbody");
             var thead = document.createElement('thead');
 
 
-            //Reeorganizar el array
+            /* Reeorganizar el array */
             //Array con los nuevos indices
             let nuevoArrTodos = ['complete', 'categoria', 'text', 'id', 'delete'];
 
@@ -182,7 +184,7 @@ export class TodoView {
                 arr = [...arr, newObject];
             });
 
-            //thead indices categorias           
+            /* thead indices categorias   */        
             let tr = document.createElement('tr');
             thead.append(tr);
 
@@ -207,8 +209,7 @@ export class TodoView {
                             input.type = 'checkbox';
                             input.checked = e[clave];
                             td.append(input);
-                        }
-                        if (clave === 'delete') {
+                        }else if(clave === 'delete') {
                             let buttonDelete = document.createElement('button') as HTMLButtonElement;
                             buttonDelete.type = 'submit';
                             buttonDelete.textContent = 'delete';
@@ -226,36 +227,8 @@ export class TodoView {
         }
 
         tabla.append(thead, tblBody);
-        tableContainer.append(tabla);
-        this.app.append(tableContainer);
-
-        // todos.forEach(e => {
-        //     const divUl = this.createElement('div', 'divUl');
-        //     divUl.id = e.id;
-        //     let categorieP = document.createElement('p');
-        //     categorieP.textContent = e.categoria;
-        //     let checkBox = this.createElement('input', 'checkBoxStyle') as HTMLElement | any;
-        //     checkBox.type = 'checkbox';
-        //     //si complete es false no esta marcado, si es true se marca
-        //     checkBox.checked = e.complete!;
-        //     checkBox.id = e.id;
-        //     let ul = this.createElement('ul', 'listTodos');
-        //     ul.textContent = e.text;
-        //     ul.contentEditable = 'true';
-        //     ul.id = e.id;
-        //     let buttonDelete = this.createElement('button', 'buttonDelete');
-        //     buttonDelete.innerText = 'delete';
-        //     buttonDelete.id = e.id;
-        //     buttonDelete.style.paddingTop = "100";
-        //     divUl.append(categorieP, checkBox, ul, buttonDelete);
-        //     this.list.append(divUl);
-        //     if (e.complete === true) {
-        //         ul.classList.add('divChecked');
-        //     } else {
-        //         ul.classList.remove('divChecked');
-        //     }
-        // })
-        // this.app.append(this.list);
+        this.tableContainer.append(tabla);
+        this.app.append(this.tableContainer);
     }
 
     bindDeleteTodo(handle: Function) {
