@@ -17,6 +17,7 @@ export class TodoView {
     public titleApp: HTMLElement;
     public form: HTMLElement;
     public divForm: HTMLElement;
+    public divTodo: HTMLElement;
     public divControl: HTMLElement;
     public divInput: HTMLElement;
     public input: HTMLInputElement;
@@ -54,6 +55,7 @@ export class TodoView {
         this.form = this.createElement('form', 'form-app');
         this.titleApp = this.createElement('h1', 'titleApp');
         this.titleApp.textContent = 'App Todo';
+        this.divTodo = this.createElement('div', 'divTodo');
         this.divControl = this.createElement('div', 'div-control');
         this.divInput = this.createElement('div', 'div-input');
         this.input = this.createElement('input', 'input-note') as HTMLInputElement;
@@ -79,7 +81,8 @@ export class TodoView {
             this.divButtonsControl.append(nameCategoria);
         })
         this.divControl.append(this.divInput, this.divButton);
-        this.form.append(this.titleApp, this.divControl, this.divButtonsControl);
+        this.divTodo.append(this.divControl, this.divButtonsControl);
+        this.form.append(this.titleApp, this.divTodo);
         this.ul = this.createElement('ul', 'listTodos');
         this.list = this.createElement('li', 'listTODOS');
         this.tableContainer = this.createElement('div', 'tableContainer');
@@ -87,6 +90,7 @@ export class TodoView {
         this.root.append(this.form);
         this.app.append(this.root);
         this.bindDisplayButtonsCategory();
+        this.bindDisplayFilter();
         this.todos = (JSON.parse(localStorage.getItem('todos')) || []);
     }
 
@@ -144,9 +148,25 @@ export class TodoView {
 
 
     //Hacemos click en el button para mostrar el filtrado y esconder la funcionalidad de agregar Todos
+    //Hay que repasarlo
     bindDisplayFilter() {
         this.form.addEventListener('click', (event) => {
-            console.log(event.target);
+            const buttonFilter = (event.target as HTMLElement).className === 'buttonFilter';
+            if (buttonFilter) {
+                this.divTodo.classList.add('displayDivTodo');
+                //Creamos el filtro
+                const formFilter = this.createElement('form', 'form-filter') as HTMLFormElement;
+                const inputFilter = this.createElement('input', 'input-filter') as HTMLInputElement;
+                const buttonFilter = this.createElement('button', 'buttonFilter') as HTMLButtonElement;
+                buttonFilter.type = 'submit';
+                buttonFilter.textContent = 'Filter';
+                formFilter.append(inputFilter, buttonFilter)
+                this.form.append(formFilter);
+
+                formFilter.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                });
+            }
         });
     }
 
