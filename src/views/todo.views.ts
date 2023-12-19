@@ -86,8 +86,8 @@ export class TodoView {
         this.table = this.createElement('table', 'table');
         this.root.append(this.form);
         this.app.append(this.root);
-        this.todos = (JSON.parse(localStorage.getItem('todos')) || []);
         this.bindDisplayButtonsCategory();
+        this.todos = (JSON.parse(localStorage.getItem('todos')) || []);
     }
 
     get _inputValue() {
@@ -114,17 +114,11 @@ export class TodoView {
         return newElement;
     }
 
-    inputTodo() {
-        this.input.addEventListener('change', (event) => {
-            console.log(event.target);
-        })
-    }
-
     //Pasamos los datos de el form para crear un Todo
     bindSubmitForm(handler: Function = () => { }) {
         this.form.addEventListener('submit', event => {
             event.preventDefault();
-
+            console.log(this._inputValue, this._categoryName);
             if ((this._inputValue.length > 0) && (this._categoryName.length > 0)) {
                 handler({ text: this._inputValue, categoria: this._categoryName });
                 this._resetInput();
@@ -134,26 +128,26 @@ export class TodoView {
     }
 
     bindDisplayButtonsCategory() {
-        this.divButtonsControl.addEventListener('click', (event) => {
+        this.divButtonsControl.addEventListener('change', (event) => {
             const isInputCheck = (event.target as HTMLInputElement).type;
             if (isInputCheck === 'checkbox') {
-                event.target.addEventListener('change', (eventCheck) => {
-                    const isChecked = (eventCheck.currentTarget as HTMLInputElement).checked;
-                    if (isChecked) {
-                        const categorie = (event.target as HTMLInputElement).id;
-                        this.categorieName = categorie;
-                    } else {
-                        this.categorieName = '';
-                    }
-                })
+                const isChecked = ((event.currentTarget as HTMLInputElement).type === 'checkbox');
+                if (!isChecked) {
+                    const categorie = (event.target as HTMLInputElement).id;
+                    this.categorieName = categorie;
+                } else {
+                    this.categorieName = '';
+                }
             }
         })
     }
 
 
     //Hacemos click en el button para mostrar el filtrado y esconder la funcionalidad de agregar Todos
-    bindDisplayFilter(){
-        
+    bindDisplayFilter() {
+        this.form.addEventListener('click', (event) => {
+            console.log(event.target);
+        });
     }
 
 
@@ -203,15 +197,17 @@ export class TodoView {
             })
 
             //Creamos la tabla
+            console.log(arr);
             arr.forEach((e) => {
                 let trBody = document.createElement('tr');
                 for (let clave in e) {
                     if (clave != 'id') {
                         let td = document.createElement('td');
+                        let input = document.createElement('input') as HTMLInputElement;
                         if (clave === 'complete') {
-                            let input = document.createElement('input') as HTMLInputElement;
                             input.type = 'checkbox';
                             input.checked = e[clave];
+                            input.id = e.id;
                             td.append(input);
                         } else if (clave === 'delete') {
                             let buttonDelete = document.createElement('button') as HTMLButtonElement;
@@ -224,6 +220,9 @@ export class TodoView {
                             td.textContent = e[clave];
                             td.contentEditable = 'true';
                             td.id = e.id;
+                            if (e.complete) {
+                                td.classList.add('completed');
+                            }
                         } else {
                             td.textContent += e[clave];
                         }
@@ -232,7 +231,8 @@ export class TodoView {
                     }
                 }
             })
-            this.table.append(newTbody);
+            this.table.innerHTML = '';
+            this.table.append(thead, newTbody);
             this.tableContainer.append(this.table);
             this.app.append(this.tableContainer);
         }
@@ -258,10 +258,10 @@ export class TodoView {
     }
 
     bindTodoChecked(handle: Function) {
-        this.list.addEventListener('change', (event: Event) => {
+        this.tableContainer.addEventListener('change', (event: Event) => {
             const checkBox = (event.target as any).type === 'checkbox';
             if (checkBox) {
-                const id = (event.target as any).parentElement.id;
+                const id = (event.target as HTMLInputElement).id;
                 handle(id);
             }
         })

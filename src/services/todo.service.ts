@@ -45,12 +45,8 @@ export class TodoService {
         this._commit(this.todos);
     }
 
-    // toggleTodos(id: string) {
-    //     this.todos = this.todos.map(e =>
-    //         e.id === id ?
-    //             new ModelTodo({ ...e, complete: !e.complete }) :
-    //             e
-    //     );
-    //     this._commit(this.todos);
-    // }
+    toggleTodos(id: string) {
+        this.todos = this.todos.map(element => element.id === id ? new ModelTodo({ ...element, complete: !element.complete }) : element)
+        this._commit(this.todos);
+    }
 }

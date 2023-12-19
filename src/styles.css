@@ -99,7 +99,7 @@ body {
   align-items: center;
 }
 
-.divChecked {
+.completed {
   text-decoration: line-through;
   text-decoration-color: black;
   text-decoration-thickness: 1.5px;
