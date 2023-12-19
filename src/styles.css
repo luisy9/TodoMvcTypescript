@@ -38,9 +38,31 @@ body {
   color: white;
   background-color: #1482f0;
   padding: 7px;
+  width: 90px;
   border-radius: 7px;
   border: none;
   cursor: pointer;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.buttonForm:hover {
+  background-color: #53a2f1;
+}
+
+.buttonFilter {
+  cursor: pointer;
+  font-size: 15px;
+  color: white;
+  background-color: #3d5f81;
+  padding: 8px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+}
+
+.buttonFilter:hover {
+  background-color: #556b81;
 }
 
 /* List Todos */

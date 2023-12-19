@@ -22,6 +22,7 @@ export class TodoView {
     public input: HTMLInputElement;
     public divButton: HTMLElement;
     public buttonSubmit: HTMLElement;
+    public buttonFilter: HTMLElement;
     public list: HTMLElement;
     public tableContainer: HTMLElement;
     public table: HTMLElement;
@@ -61,7 +62,9 @@ export class TodoView {
         this.divButton = this.createElement('div', 'div-button');
         this.buttonSubmit = this.createElement('button', 'buttonForm');
         this.buttonSubmit.textContent = 'Submit';
-        this.divButton.append(this.buttonSubmit);
+        this.buttonFilter = this.createElement('button', 'buttonFilter');
+        this.buttonFilter.textContent = 'Filtro';
+        this.divButton.append(this.buttonSubmit, this.buttonFilter);
         this.divButtonsControl = this.createElement('div', 'divButtonsControls');
         this.categorias.forEach(e => {
             this.buttonCategoria = document.createElement('input');
@@ -136,7 +139,6 @@ export class TodoView {
             if (isInputCheck === 'checkbox') {
                 event.target.addEventListener('change', (eventCheck) => {
                     const isChecked = (eventCheck.currentTarget as HTMLInputElement).checked;
-                    console.log(isChecked);
                     if (isChecked) {
                         const categorie = (event.target as HTMLInputElement).id;
                         this.categorieName = categorie;
@@ -146,6 +148,12 @@ export class TodoView {
                 })
             }
         })
+    }
+
+
+    //Hacemos click en el button para mostrar el filtrado y esconder la funcionalidad de agregar Todos
+    bindDisplayFilter(){
+        
     }
 
 
