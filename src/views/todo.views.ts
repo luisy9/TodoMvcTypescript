@@ -24,6 +24,7 @@ export class TodoView {
     public buttonSubmit: HTMLElement;
     public list: HTMLElement;
     public tableContainer: HTMLElement;
+    public table: HTMLElement;
     public ul: HTMLElement;
     public todos: todo[];
     public buttonDelete: HTMLElement;
@@ -79,6 +80,7 @@ export class TodoView {
         this.ul = this.createElement('ul', 'listTodos');
         this.list = this.createElement('li', 'listTODOS');
         this.tableContainer = this.createElement('div', 'tableContainer');
+        this.table = this.createElement('table', 'table');
         this.root.append(this.form);
         this.app.append(this.root);
         this.todos = (JSON.parse(localStorage.getItem('todos')) || []);
@@ -149,17 +151,11 @@ export class TodoView {
 
     //Display TODOS
     displayTodo(todos: ModelTodo[]) {
-        while (this.tableContainer.firstChild) {
-            this.tableContainer.removeChild(this.tableContainer.firstChild);
-        }
+        const newTbody = this.createElement('tbody', 'tbody');
 
+        this.table.innerHTML = '';
         if (todos.length > 0) {
-            // var tableContainer = document.createElement('div');
-            // tableContainer.classList.add('tableContainer');
-            var tabla = document.createElement("table");
-            var tblBody = document.createElement("tbody");
             var thead = document.createElement('thead');
-
 
             /* Reeorganizar el array */
             //Array con los nuevos indices
@@ -184,7 +180,7 @@ export class TodoView {
                 arr = [...arr, newObject];
             });
 
-            /* thead indices categorias   */        
+            /* thead indices categorias   */
             let tr = document.createElement('tr');
             thead.append(tr);
 
@@ -199,7 +195,7 @@ export class TodoView {
             })
 
             //Creamos la tabla
-            arr.forEach((e, index) => {
+            arr.forEach((e) => {
                 let trBody = document.createElement('tr');
                 for (let clave in e) {
                     if (clave != 'id') {
@@ -209,31 +205,36 @@ export class TodoView {
                             input.type = 'checkbox';
                             input.checked = e[clave];
                             td.append(input);
-                        }else if(clave === 'delete') {
+                        } else if (clave === 'delete') {
                             let buttonDelete = document.createElement('button') as HTMLButtonElement;
                             buttonDelete.type = 'submit';
                             buttonDelete.textContent = 'delete';
                             buttonDelete.classList.add('btn', 'btn-delete');
+                            buttonDelete.id = e.id;
                             td.append(buttonDelete);
+                        } else if (clave === 'text') {
+                            td.textContent = e[clave];
+                            td.contentEditable = 'true';
+                            td.id = e.id;
                         } else {
                             td.textContent += e[clave];
                         }
                         trBody.append(td);
+                        newTbody.append(trBody);
                     }
                 }
-                tblBody.append(trBody);
             })
-
+            this.table.append(newTbody);
+            this.tableContainer.append(this.table);
+            this.app.append(this.tableContainer);
         }
 
-        tabla.append(thead, tblBody);
-        this.tableContainer.append(tabla);
-        this.app.append(this.tableContainer);
+
     }
 
     bindDeleteTodo(handle: Function) {
-        this.list.addEventListener('click', (event: Event) => {
-            if ((event.target as any).className === 'buttonDelete') {
+        this.tableContainer.addEventListener('click', (event: Event) => {
+            if ((event.target as any).className === 'btn btn-delete') {
                 const _id = (event.target as any).id;
                 handle(_id);
             }
@@ -241,7 +242,7 @@ export class TodoView {
     }
 
     bindUpdateTodos(handle: Function) {
-        this.list.addEventListener('focusout', (event: Event) => {
+        this.tableContainer.addEventListener('focusout', (event: Event) => {
             const id = (event.target as HTMLElement).id;
             const textEdit = (event.target as HTMLElement).innerText;
             handle(id, textEdit);

@@ -28,21 +28,22 @@ export class TodoService {
     }
 
 
-    // deleteTodo(_id: string) {
-    //     this.todos = this.todos.filter(e => e.id != _id);
-    //     this._commit(this.todos);
-    // }
+    deleteTodo(_id: string) {
+        this.todos = this.todos.filter(e => e.id != _id);
+        this._commit(this.todos);
+    }
 
-    // updateTodos(id: number, todo: string) {
-    //     const _id = id.toString();
-    //     this.todos = this.todos.map(e => {
-    //         if (e.id === _id) {
-    //             return new ModelTodo({ ...e, text: todo });
-    //         }
-    //         return e;
-    //     })
-    //     this._commit(this.todos);
-    // }
+    updateTodos(id: number, todo: string) {
+        console.log(id, todo);
+        const _id = id.toString();
+        this.todos = this.todos.map(e => {
+            if (e.id === _id) {
+                return new ModelTodo({ ...e, text: todo });
+            }
+            return e;
+        })
+        this._commit(this.todos);
+    }
 
     // toggleTodos(id: string) {
     //     this.todos = this.todos.map(e =>
