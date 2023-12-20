@@ -20,17 +20,35 @@ body {
 
 .div-app {
   display: flex;
-  align-items: center;
+  justify-content: center;
   flex-direction: column;
+  align-items: center;
 }
+
+.form-app {
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.titleApp {text-align: center;}
 
 .div-control {
   display: flex;
   justify-content: space-between;
 }
 
+.div-input {
+  flex-grow: 1;
+  margin: auto;
+}
+
 .input-note {
-  padding: 5px 10px;
+  padding: 7px 10px;
+  width: 100%;
+  border-radius: 5px;
+  border: none;
 }
 
 .buttonForm {
@@ -107,9 +125,11 @@ body {
 
 .divButtonsControls {
   padding: 1rem;
+  display: flex;
+  justify-content: center;
 }
 
-.divButtonsControls > button {
+.divButtonsControls>button {
   border: 0;
   margin: 7px;
   border-radius: 5px;
@@ -118,7 +138,7 @@ body {
   font-size: 14px;
 }
 
-.divButtonsControls > button:hover {
+.divButtonsControls>button:hover {
   background-color: grey;
   color: white;
 }
@@ -129,7 +149,7 @@ body {
   padding: 5px;
 }
 
-.liCategorias > .checkCategorie {
+.liCategorias>.checkCategorie {
   width: 15px;
   height: 15px;
 }
@@ -154,10 +174,67 @@ body {
   font-size: 15px;
 }
 
+
 .displayDivTodo {
   display: none;
 }
 
 .input-filter {
   margin-right: 1rem;
+}
+
+.button-filter {
+  cursor: pointer;
+  font-size: 15px;
+  color: white;
+  background-color: #3d5f81;
+  padding: 8px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+}
+
+.button-filter:hover {
+  background-color: #4e79a3;
+}
+
+.input-filter {
+  border-radius: 5px;
+  border: none;
+  height: 25px;
+  
+}
+
+.form-filter {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.div-filter-form {
+  display: flex;
+  justify-content: center;
+}
+
+.divInputFilter {
+  flex-grow: 1;
+  padding: 0 10px;
+  margin: auto;
+}
+
+.input-filter {
+  margin: auto;
+  width: 80%;
+}
+
+.buttonExit {
+  background-color: red;
+  cursor: pointer;
+  color: white;
+  font-size: 17px;
+  border: none;
+  border-radius: 5px;
+  height: 30px;
+  width: 70px;
 }

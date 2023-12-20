@@ -27,6 +27,14 @@ export class TodoView {
     public list: HTMLElement;
     public tableContainer: HTMLElement;
     public table: HTMLElement;
+    public formFilter: HTMLElement;
+    public h1Title: HTMLElement;
+    public exitFilter: HTMLElement;
+    public divFilterForm: HTMLElement;
+    public divInputFilter: HTMLElement;
+    public divButtonFilter: HTMLElement;
+    public inputFilter: HTMLElement;
+    public submitFilter: HTMLButtonElement;
     public ul: HTMLElement;
     public todos: todo[];
     public buttonDelete: HTMLElement;
@@ -53,6 +61,7 @@ export class TodoView {
         this.app = document.getElementById('root');
         this.root = this.createElement('div', 'div-app');
         this.form = this.createElement('form', 'form-app');
+        this.divForm = this.createElement('div', 'divForm');
         this.titleApp = this.createElement('h1', 'titleApp');
         this.titleApp.textContent = 'App Todo';
         this.divTodo = this.createElement('div', 'divTodo');
@@ -82,7 +91,23 @@ export class TodoView {
         })
         this.divControl.append(this.divInput, this.divButton);
         this.divTodo.append(this.divControl, this.divButtonsControl);
-        this.form.append(this.titleApp, this.divTodo);
+        this.formFilter = this.createElement('form', 'form-filter');
+        this.h1Title = this.createElement('h1', 'titleApp');
+        this.h1Title.textContent = 'Filter Todos';
+        this.exitFilter = this.createElement('button', 'buttonExit');
+        this.exitFilter.textContent = 'Atras';
+        this.divInputFilter = this.createElement('div', 'divInputFilter');
+        this.divButtonFilter = this.createElement('div', 'divButtonFilter');
+        this.inputFilter = this.createElement('input', 'input-filter');
+        this.divInputFilter.append(this.inputFilter);
+        this.submitFilter = this.createElement('button', 'button-filter') as HTMLButtonElement;
+        this.submitFilter.textContent = 'Filtrar';
+        this.submitFilter.type = 'submit';
+        this.divButtonFilter.append(this.submitFilter);
+        this.divFilterForm = this.createElement('div', 'div-filter-form');
+        this.divFilterForm.append(this.divInputFilter, this.divButtonFilter);
+        this.divForm.append(this.titleApp, this.divTodo);
+        this.form.append(this.divForm);
         this.ul = this.createElement('ul', 'listTodos');
         this.list = this.createElement('li', 'listTODOS');
         this.tableContainer = this.createElement('div', 'tableContainer');
@@ -150,24 +175,33 @@ export class TodoView {
     //Hacemos click en el button para mostrar el filtrado y esconder la funcionalidad de agregar Todos
     //Hay que repasarlo
     bindDisplayFilter() {
+        //Funcion para mostrar todos los todos actuales
+        this.bindShowAllTodosFilter();
+
         this.form.addEventListener('click', (event) => {
             const buttonFilter = (event.target as HTMLElement).className === 'buttonFilter';
             if (buttonFilter) {
-                this.divTodo.classList.add('displayDivTodo');
-                //Creamos el filtro
-                const formFilter = this.createElement('form', 'form-filter') as HTMLFormElement;
-                const inputFilter = this.createElement('input', 'input-filter') as HTMLInputElement;
-                const buttonFilter = this.createElement('button', 'buttonFilter') as HTMLButtonElement;
-                buttonFilter.type = 'submit';
-                buttonFilter.textContent = 'Filter';
-                formFilter.append(inputFilter, buttonFilter)
-                this.form.append(formFilter);
+                this.form.classList.add('displayDivTodo');
 
-                formFilter.addEventListener('submit', (event) => {
-                    event.preventDefault();
-                });
+                //Creamos el filtro
+                this.formFilter.append(this.h1Title, this.divFilterForm);
+                this.root.append(this.exitFilter, this.formFilter);
             }
         });
+    }
+
+
+    bindShowAllTodosFilter() {
+        //Mostrar todos los Todos
+    }
+
+
+    //Funcion para ejecutar el filter
+    bindFilterTodos() {
+        // this.formFilter.addEventListener('submit', (event) => {
+        //     event.preventDefault();
+        //     console.log(event);
+        // });
     }
 
 
@@ -217,7 +251,6 @@ export class TodoView {
             })
 
             //Creamos la tabla
-            console.log(arr);
             arr.forEach((e) => {
                 let trBody = document.createElement('tr');
                 for (let clave in e) {
