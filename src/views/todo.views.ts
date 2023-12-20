@@ -41,6 +41,8 @@ export class TodoView {
     public divButtonsControl: HTMLElement;
     public buttonCategoria: HTMLInputElement;
     public categorieName: string = '';
+
+    //Array de objetos de Categorias
     public categorias: categories[] = [
         {
             id: 1,
@@ -58,6 +60,17 @@ export class TodoView {
 
 
     constructor() {
+        //Inicializar Elementos
+        this.initializedElements();
+        //Configuramos el UI
+        this.setupUI();
+        //Inicializamos los eventos
+        this.bindEventsHandlers();
+        this.todos = (JSON.parse(localStorage.getItem('todos')) || []);
+    }
+
+    //Inicializar Elementos
+    initializedElements() {
         this.app = document.getElementById('root');
         this.root = this.createElement('div', 'div-app');
         this.form = this.createElement('form', 'form-app');
@@ -69,13 +82,11 @@ export class TodoView {
         this.divInput = this.createElement('div', 'div-input');
         this.input = this.createElement('input', 'input-note') as HTMLInputElement;
         this.input.type = 'text';
-        this.divInput.append(this.input);
         this.divButton = this.createElement('div', 'div-button');
         this.buttonSubmit = this.createElement('button', 'buttonForm');
         this.buttonSubmit.textContent = 'Submit';
         this.buttonFilter = this.createElement('button', 'buttonFilter');
         this.buttonFilter.textContent = 'Filtro';
-        this.divButton.append(this.buttonSubmit, this.buttonFilter);
         this.divButtonsControl = this.createElement('div', 'divButtonsControls');
         this.categorias.forEach(e => {
             this.buttonCategoria = document.createElement('input');
@@ -89,8 +100,6 @@ export class TodoView {
             nameCategoria.append(this.buttonCategoria);
             this.divButtonsControl.append(nameCategoria);
         })
-        this.divControl.append(this.divInput, this.divButton);
-        this.divTodo.append(this.divControl, this.divButtonsControl);
         this.formFilter = this.createElement('form', 'form-filter');
         this.h1Title = this.createElement('h1', 'titleApp');
         this.h1Title.textContent = 'Filter Todos';
@@ -99,25 +108,37 @@ export class TodoView {
         this.divInputFilter = this.createElement('div', 'divInputFilter');
         this.divButtonFilter = this.createElement('div', 'divButtonFilter');
         this.inputFilter = this.createElement('input', 'input-filter');
-        this.divInputFilter.append(this.inputFilter);
         this.submitFilter = this.createElement('button', 'button-filter') as HTMLButtonElement;
         this.submitFilter.textContent = 'Filtrar';
         this.submitFilter.type = 'submit';
-        this.divButtonFilter.append(this.submitFilter);
         this.divFilterForm = this.createElement('div', 'div-filter-form');
-        this.divFilterForm.append(this.divInputFilter, this.divButtonFilter);
-        this.divForm.append(this.titleApp, this.divTodo);
-        this.form.append(this.divForm);
         this.ul = this.createElement('ul', 'listTodos');
         this.list = this.createElement('li', 'listTODOS');
         this.tableContainer = this.createElement('div', 'tableContainer');
         this.table = this.createElement('table', 'table');
+    }
+
+    //Configuramos Interfaz de usuario
+    setupUI() {
+        this.divInput.append(this.input);
+        this.divButton.append(this.buttonSubmit, this.buttonFilter);
+        this.divControl.append(this.divInput, this.divButton);
+        this.divTodo.append(this.divControl, this.divButtonsControl);
+        this.divInputFilter.append(this.inputFilter);
+        this.divButtonFilter.append(this.submitFilter);
+        this.divFilterForm.append(this.divInputFilter, this.divButtonFilter);
+        this.divForm.append(this.titleApp, this.divTodo);
+        this.form.append(this.divForm);
         this.root.append(this.form);
         this.app.append(this.root);
+    }
+
+    //Inicializamos los eventos
+    bindEventsHandlers() {
         this.bindDisplayButtonsCategory();
         this.bindDisplayFilter();
-        this.todos = (JSON.parse(localStorage.getItem('todos')) || []);
     }
+
 
     get _inputValue() {
         return this.input.value;
@@ -174,6 +195,9 @@ export class TodoView {
 
     //Hacemos click en el button para mostrar el filtrado y esconder la funcionalidad de agregar Todos
     //Hay que repasarlo
+
+    /*****  Primero hare el filtrado por botones de las categorias  *****/
+    /**** Luego hare el filtrado por input ****/
     bindDisplayFilter() {
         //Funcion para mostrar todos los todos actuales
         this.bindShowAllTodosFilter();
