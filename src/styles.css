@@ -32,7 +32,9 @@ body {
   box-sizing: border-box;
 }
 
-.titleApp {text-align: center;}
+.titleApp {
+  text-align: center;
+}
 
 .div-control {
   display: flex;
@@ -146,7 +148,7 @@ body {
 .liCategorias {
   list-style: none;
   display: list-item inline;
-  padding: 5px;
+  padding: 10px;
 }
 
 .liCategorias>.checkCategorie {
@@ -202,7 +204,7 @@ body {
   border-radius: 5px;
   border: none;
   height: 25px;
-  
+
 }
 
 .form-filter {
@@ -238,3 +240,29 @@ body {
   height: 30px;
   width: 70px;
 }
+
+.divButtonsControlsFilter {
+  display: flex;
+  justify-content: center;
+}
+
+.button-filter-categories {
+  border-radius: 5px;
+  border: 1px solid #FFFFFF;
+  padding: 10px;
+  width: auto;
+  height: 2.5rem;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #212F3D;
+  font-size: 15px;
+  color: #FFFFFF;
+
+}
+
+.button-filter-categories:hover {
+  box-shadow: 0px 2px 50px 0px rgba(0, 0, 0, 0.651);
+  translate: 0 -5px;
+  transition: all 300ms;
+}
+

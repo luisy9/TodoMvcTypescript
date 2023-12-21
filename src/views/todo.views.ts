@@ -28,6 +28,7 @@ export class TodoView {
     public tableContainer: HTMLElement;
     public table: HTMLElement;
     public formFilter: HTMLElement;
+    public divFormFilter: HTMLElement;
     public h1Title: HTMLElement;
     public exitFilter: HTMLElement;
     public divFilterForm: HTMLElement;
@@ -39,7 +40,9 @@ export class TodoView {
     public todos: todo[];
     public buttonDelete: HTMLElement;
     public divButtonsControl: HTMLElement;
+    public divButtonsControlFilter: HTMLElement;
     public buttonCategoria: HTMLInputElement;
+    public buttonCategoriaFilter: HTMLElement;
     public categorieName: string = '';
 
     //Array de objetos de Categorias
@@ -88,6 +91,7 @@ export class TodoView {
         this.buttonFilter = this.createElement('button', 'buttonFilter');
         this.buttonFilter.textContent = 'Filtro';
         this.divButtonsControl = this.createElement('div', 'divButtonsControls');
+        this.divButtonsControlFilter = this.createElement('div', 'divButtonsControlsFilter');
         this.categorias.forEach(e => {
             this.buttonCategoria = document.createElement('input');
             this.buttonCategoria.type = 'checkbox';
@@ -100,6 +104,7 @@ export class TodoView {
             nameCategoria.append(this.buttonCategoria);
             this.divButtonsControl.append(nameCategoria);
         })
+        this.divFormFilter = this.createElement('div', 'divFormFilter');
         this.formFilter = this.createElement('form', 'form-filter');
         this.h1Title = this.createElement('h1', 'titleApp');
         this.h1Title.textContent = 'Filter Todos';
@@ -137,6 +142,7 @@ export class TodoView {
     bindEventsHandlers() {
         this.bindDisplayButtonsCategory();
         this.bindDisplayFilter();
+        this.bindFilterTodos();
     }
 
 
@@ -168,7 +174,6 @@ export class TodoView {
     bindSubmitForm(handler: Function = () => { }) {
         this.form.addEventListener('submit', event => {
             event.preventDefault();
-            console.log(this._inputValue, this._categoryName);
             if ((this._inputValue.length > 0) && (this._categoryName.length > 0)) {
                 handler({ text: this._inputValue, categoria: this._categoryName });
                 this._resetInput();
@@ -195,6 +200,18 @@ export class TodoView {
 
     //Hacemos click en el button para mostrar el filtrado y esconder la funcionalidad de agregar Todos
     //Hay que repasarlo
+    buildButtonsfilter() {
+        this.categorias.forEach(e => {
+            this.buttonCategoriaFilter = this.createElement('button', 'button-filter-categories') as HTMLElement;
+            this.buttonCategoriaFilter.textContent = e.name;
+            this.buttonCategoriaFilter.id = e.name;
+            let nameCategoria = this.createElement('li', 'liCategorias');
+            nameCategoria.append(this.buttonCategoriaFilter);
+            this.divButtonsControlFilter.append(nameCategoria);
+        })
+        this.formFilter.append(this.divButtonsControlFilter);
+        this.divFormFilter.append(this.formFilter);
+    }
 
     /*****  Primero hare el filtrado por botones de las categorias  *****/
     /**** Luego hare el filtrado por input ****/
@@ -205,27 +222,31 @@ export class TodoView {
         this.form.addEventListener('click', (event) => {
             const buttonFilter = (event.target as HTMLElement).className === 'buttonFilter';
             if (buttonFilter) {
+                this.buildButtonsfilter();
                 this.form.classList.add('displayDivTodo');
 
                 //Creamos el filtro
-                this.formFilter.append(this.h1Title, this.divFilterForm);
-                this.root.append(this.exitFilter, this.formFilter);
+                // this.formFilter.append(this.h1Title, this.divFilterForm);
+                this.root.append(this.exitFilter, this.h1Title, this.divFormFilter);
             }
         });
     }
 
 
     bindShowAllTodosFilter() {
-        //Mostrar todos los Todos
+        //Mostrar todos los Todos en el div de divFormFilter
+
+        
     }
 
 
     //Funcion para ejecutar el filter
     bindFilterTodos() {
-        // this.formFilter.addEventListener('submit', (event) => {
-        //     event.preventDefault();
-        //     console.log(event);
-        // });
+        this.formFilter.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const buttonClicked = this.formFilter.querySelector('.button-filter-categories') as HTMLElement;
+            console.log(buttonClicked.id);
+        });
     }
 
 
