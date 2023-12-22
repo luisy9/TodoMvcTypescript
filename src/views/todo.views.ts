@@ -143,8 +143,10 @@ export class TodoView {
         this.bindDisplayButtonsCategory();
         this.bindDisplayFilter();
         this.bindFilterTodos();
+        this.closeFilter();
     }
 
+    public isFilter: boolean = false;
 
     get _inputValue() {
         return this.input.value;
@@ -201,6 +203,12 @@ export class TodoView {
     //Hacemos click en el button para mostrar el filtrado y esconder la funcionalidad de agregar Todos
     //Hay que repasarlo
     buildButtonsfilter() {
+
+        //Resetear un div con los botones
+        while(this.divButtonsControlFilter.firstChild){
+            this.divButtonsControlFilter.firstChild.remove();
+        }
+
         this.categorias.forEach(e => {
             this.buttonCategoriaFilter = this.createElement('button', 'button-filter-categories') as HTMLElement;
             this.buttonCategoriaFilter.textContent = e.name;
@@ -210,52 +218,50 @@ export class TodoView {
             this.divButtonsControlFilter.append(nameCategoria);
         })
         this.formFilter.append(this.divButtonsControlFilter);
-        this.divFormFilter.append(this.formFilter);
+        this.divFormFilter.append(this.exitFilter, this.h1Title, this.formFilter);
     }
 
     /*****  Primero hare el filtrado por botones de las categorias  *****/
     /**** Luego hare el filtrado por input ****/
     bindDisplayFilter() {
         //Funcion para mostrar todos los todos actuales
-        this.bindShowAllTodosFilter();
-
         this.form.addEventListener('click', (event) => {
+            // this.bindShowAllTodosFilter();
             const buttonFilter = (event.target as HTMLElement).className === 'buttonFilter';
             if (buttonFilter) {
                 this.buildButtonsfilter();
                 this.form.classList.add('displayDivTodo');
+                this.divFormFilter.style.display = 'block';
 
-                //Creamos el filtro
                 // this.formFilter.append(this.h1Title, this.divFilterForm);
-                this.root.append(this.exitFilter, this.h1Title, this.divFormFilter);
+                this.root.append(this.divFormFilter);
             }
         });
     }
 
-
-    bindShowAllTodosFilter() {
-        //Mostrar todos los Todos en el div de divFormFilter
-
-        
-    }
-
-
     //Funcion para ejecutar el filter
     bindFilterTodos() {
-        this.formFilter.addEventListener('submit', (event) => {
+        this.divButtonsControlFilter.addEventListener('click', (event) => {
             event.preventDefault();
-            const buttonClicked = this.formFilter.querySelector('.button-filter-categories') as HTMLElement;
-            console.log(buttonClicked.id);
+            const _categoryId = (event.target as HTMLElement).id;
+            const filterTodos = this.todos.filter(e => e.categoria === _categoryId) as [];
+            this.displayTodo(filterTodos);
         });
+    }
+
+    closeFilter(){
+        this.exitFilter.addEventListener('click', (event) => {
+            this.form.classList.remove('displayDivTodo');
+            this.divFormFilter.style.display = 'none';
+        })
     }
 
 
     //Display TODOS
-    displayTodo(todos: ModelTodo[]) {
+    displayTodo(todos?: ModelTodo[]) {
         const newTbody = this.createElement('tbody', 'tbody');
-
         this.table.innerHTML = '';
-        if (todos.length > 0) {
+        if (todos?.length > 0) {
             var thead = document.createElement('thead');
 
             /* Reeorganizar el array */
@@ -307,7 +313,8 @@ export class TodoView {
                             input.checked = e[clave];
                             input.id = e.id;
                             td.append(input);
-                        } else if (clave === 'delete') {
+                        } else if (clave === 'delete' && !this.isFilter) {
+                            console.log(this.isFilter);
                             let buttonDelete = document.createElement('button') as HTMLButtonElement;
                             buttonDelete.type = 'submit';
                             buttonDelete.textContent = 'delete';
@@ -329,6 +336,7 @@ export class TodoView {
                     }
                 }
             })
+
             this.table.innerHTML = '';
             this.table.append(thead, newTbody);
             this.tableContainer.append(this.table);

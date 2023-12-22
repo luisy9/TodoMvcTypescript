@@ -22,6 +22,7 @@ export class TodoController {
         this.view.bindTodoChecked(this.handleCheckTodo);
 
         this.onListChanged(this.service.todos);
+        
     }
 
     onListChanged = (todos: ModelTodo[]) => {
