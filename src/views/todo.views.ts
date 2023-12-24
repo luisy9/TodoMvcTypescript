@@ -79,7 +79,7 @@ export class TodoView {
         this.form = this.createElement('form', 'form-app');
         this.divForm = this.createElement('div', 'divForm');
         this.titleApp = this.createElement('h1', 'titleApp');
-        this.titleApp.textContent = 'App Todo';
+        this.titleApp.textContent = "App Todo's";
         this.divTodo = this.createElement('div', 'divTodo');
         this.divControl = this.createElement('div', 'div-control');
         this.divInput = this.createElement('div', 'div-input');
@@ -107,7 +107,7 @@ export class TodoView {
         this.divFormFilter = this.createElement('div', 'divFormFilter');
         this.formFilter = this.createElement('form', 'form-filter');
         this.h1Title = this.createElement('h1', 'titleApp');
-        this.h1Title.textContent = 'Filter Todos';
+        this.h1Title.textContent = "Filter Todo's";
         this.exitFilter = this.createElement('button', 'buttonExit');
         this.exitFilter.textContent = 'Atras';
         this.divInputFilter = this.createElement('div', 'divInputFilter');
@@ -141,9 +141,9 @@ export class TodoView {
     //Inicializamos los eventos
     bindEventsHandlers() {
         this.bindDisplayButtonsCategory();
-        this.bindDisplayFilter();
-        this.bindFilterTodos();
-        this.closeFilter();
+        // this.bindDisplayFilter();
+        // this.bindFilterTodos();
+        // this.closeFilter();
     }
 
     public isFilter: boolean = false;
@@ -203,12 +203,12 @@ export class TodoView {
     //Hacemos click en el button para mostrar el filtrado y esconder la funcionalidad de agregar Todos
     //Hay que repasarlo
     buildButtonsfilter() {
-
         //Resetear un div con los botones
-        while(this.divButtonsControlFilter.firstChild){
+        while (this.divButtonsControlFilter.firstChild) {
             this.divButtonsControlFilter.firstChild.remove();
         }
 
+        //Bucle para montar botones filtrado
         this.categorias.forEach(e => {
             this.buttonCategoriaFilter = this.createElement('button', 'button-filter-categories') as HTMLElement;
             this.buttonCategoriaFilter.textContent = e.name;
@@ -223,7 +223,7 @@ export class TodoView {
 
     /*****  Primero hare el filtrado por botones de las categorias  *****/
     /**** Luego hare el filtrado por input ****/
-    bindDisplayFilter() {
+    bindDisplayFilter(todos: ModelTodo[]) {
         //Funcion para mostrar todos los todos actuales
         this.form.addEventListener('click', (event) => {
             // this.bindShowAllTodosFilter();
@@ -232,36 +232,51 @@ export class TodoView {
                 this.buildButtonsfilter();
                 this.form.classList.add('displayDivTodo');
                 this.divFormFilter.style.display = 'block';
+                this.displayTodo(todos, true);
 
                 // this.formFilter.append(this.h1Title, this.divFilterForm);
+                this.closeFilter(todos);
+                this.bindFilterTodos(todos);
                 this.root.append(this.divFormFilter);
             }
         });
     }
 
     //Funcion para ejecutar el filter
-    bindFilterTodos() {
+    bindFilterTodos(todos: ModelTodo[]) {
         this.divButtonsControlFilter.addEventListener('click', (event) => {
+            console.log('hola');
             event.preventDefault();
-            const _categoryId = (event.target as HTMLElement).id;
-            const filterTodos = this.todos.filter(e => e.categoria === _categoryId) as [];
-            this.displayTodo(filterTodos);
+            const buttonFilter = (event.target as HTMLElement).className === 'button-filter-categories';
+            if (buttonFilter) {
+                const _categoryId = (event.target as HTMLElement).id;
+
+                //Filter Todos
+                const filterTodos = todos.filter(e => e.categoria === _categoryId) as [];
+                this.displayTodo(filterTodos, true);
+
+                //Le pasamos el array actualizado a closeFilter
+                this.closeFilter(todos);
+            }
         });
     }
 
-    closeFilter(){
+    //Button Atras para ver todos los Todo's
+    closeFilter(todos: ModelTodo[]) {
         this.exitFilter.addEventListener('click', (event) => {
+
             this.form.classList.remove('displayDivTodo');
             this.divFormFilter.style.display = 'none';
-        })
+            this.displayTodo(todos, false);
+        });
     }
 
 
     //Display TODOS
-    displayTodo(todos?: ModelTodo[]) {
+    displayTodo(todos: ModelTodo[], isFilter: boolean = false) {
         const newTbody = this.createElement('tbody', 'tbody');
         this.table.innerHTML = '';
-        if (todos?.length > 0) {
+        if (todos.length > 0) {
             var thead = document.createElement('thead');
 
             /* Reeorganizar el array */
@@ -308,13 +323,13 @@ export class TodoView {
                     if (clave != 'id') {
                         let td = document.createElement('td');
                         let input = document.createElement('input') as HTMLInputElement;
+
                         if (clave === 'complete') {
                             input.type = 'checkbox';
                             input.checked = e[clave];
                             input.id = e.id;
                             td.append(input);
-                        } else if (clave === 'delete' && !this.isFilter) {
-                            console.log(this.isFilter);
+                        } else if (clave === 'delete' && !isFilter) {
                             let buttonDelete = document.createElement('button') as HTMLButtonElement;
                             buttonDelete.type = 'submit';
                             buttonDelete.textContent = 'delete';
@@ -331,21 +346,34 @@ export class TodoView {
                         } else {
                             td.textContent += e[clave];
                         }
+
                         trBody.append(td);
                         newTbody.append(trBody);
                     }
                 }
-            })
+            });
 
             this.table.innerHTML = '';
+
+            if (isFilter) {
+                const filasTr = newTbody.querySelectorAll('tr');
+                filasTr.forEach(e => {
+                    const td = e.querySelectorAll('td');
+                    td.forEach(td => {
+                        if (td.textContent === 'undefined') {
+                            td.remove();
+                        }
+                    })
+                });
+            }
+
             this.table.append(thead, newTbody);
             this.tableContainer.append(this.table);
             this.app.append(this.tableContainer);
         }
-
-
     }
 
+    //Porque cuando le doy a un button para delete no se hace al momento
     bindDeleteTodo(handle: Function) {
         this.tableContainer.addEventListener('click', (event: Event) => {
             if ((event.target as any).className === 'btn btn-delete') {

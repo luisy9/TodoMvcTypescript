@@ -27,6 +27,7 @@ export class TodoController {
 
     onListChanged = (todos: ModelTodo[]) => {
         this.view.displayTodo(todos);
+        this.view.bindDisplayFilter(todos);
     }
 
     handleAddTodo = (text: todo, categoria: todo) => {
