@@ -2,6 +2,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
 html {
@@ -11,11 +12,20 @@ html {
 }
 
 body {
-  background-color: #212f3d;
+  background: linear-gradient(#020521, #0D1226);
+  height: 100vh;
 }
 
 #root {
   padding: 1rem;
+}
+
+.div-app-grid {
+  /* display: grid; */
+  gap: 1;
+  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
 }
 
 .div-app {
@@ -53,10 +63,16 @@ body {
   border: none;
 }
 
+.input-note:focus {
+  outline: none;
+  border: 2px solid #00DC82;
+}
+
 .buttonForm {
   font-size: 15px;
-  color: white;
-  background-color: #1482f0;
+  font-weight: bold;
+  color: #0F172A;
+  background-color: #00DC82;
   padding: 7px;
   width: 90px;
   border-radius: 7px;
@@ -64,17 +80,18 @@ body {
   cursor: pointer;
   margin-left: 1rem;
   margin-right: 1rem;
+  margin-bottom: 9px;
 }
 
 .buttonForm:hover {
-  background-color: #53a2f1;
+  background-color: #18c07a;
 }
 
 .buttonFilter {
   cursor: pointer;
   font-size: 15px;
   color: white;
-  background-color: #3d5f81;
+  background-color: #0F172A;
   padding: 8px;
   border-radius: 7px;
   border: none;
@@ -83,6 +100,10 @@ body {
 
 .buttonFilter:hover {
   background-color: #556b81;
+}
+
+.imgLupa {
+  background-image: url('./images/icono-lupa.svg');
 }
 
 /* List Todos */
@@ -157,11 +178,23 @@ body {
 }
 
 .tableContainer {
-  border: 2px solid black;
-  padding: 1rem;
   display: flex;
   justify-content: center;
-  align-items: center;
+}
+
+.table {
+  border: 2px solid #00DC82;
+  border-radius: 5px;
+  color: white;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 1rem;
+}
+
+tbody {
+  background-color: #0F172A;
 }
 
 .btn-delete {
@@ -266,3 +299,6 @@ body {
   transition: all 300ms;
 }
 
+img {
+  padding-top: 5px;
+}

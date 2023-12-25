@@ -11,8 +11,16 @@ export interface categories {
     name: string;
 }
 
+interface ImageOptions {
+    src: string;
+    alt: string;
+    width?: number;
+    heigth?: number;
+};
+
 export class TodoView {
     public app: HTMLElement;
+    public divAppGrid: HTMLElement;
     public root: HTMLElement;
     public titleApp: HTMLElement;
     public form: HTMLElement;
@@ -24,7 +32,9 @@ export class TodoView {
     public divButton: HTMLElement;
     public buttonSubmit: HTMLElement;
     public buttonFilter: HTMLElement;
+    public imgButton: HTMLElement;
     public list: HTMLElement;
+    public h1Table: HTMLElement;
     public tableContainer: HTMLElement;
     public table: HTMLElement;
     public formFilter: HTMLElement;
@@ -61,7 +71,6 @@ export class TodoView {
         }
     ]
 
-
     constructor() {
         //Inicializar Elementos
         this.initializedElements();
@@ -75,11 +84,12 @@ export class TodoView {
     //Inicializar Elementos
     initializedElements() {
         this.app = document.getElementById('root');
+        this.divAppGrid = this.createElement('div', 'div-app-grid');
         this.root = this.createElement('div', 'div-app');
         this.form = this.createElement('form', 'form-app');
         this.divForm = this.createElement('div', 'divForm');
         this.titleApp = this.createElement('h1', 'titleApp');
-        this.titleApp.textContent = "App Todo's";
+        this.titleApp.textContent = "Add Todo's";
         this.divTodo = this.createElement('div', 'divTodo');
         this.divControl = this.createElement('div', 'div-control');
         this.divInput = this.createElement('div', 'div-input');
@@ -89,7 +99,17 @@ export class TodoView {
         this.buttonSubmit = this.createElement('button', 'buttonForm');
         this.buttonSubmit.textContent = 'Submit';
         this.buttonFilter = this.createElement('button', 'buttonFilter');
-        this.buttonFilter.textContent = 'Filtro';
+        // this.buttonFilter.textContent = 'Filtro';
+        const imgOptions: ImageOptions = {
+            src: './images/icono-lupa.svg',
+            alt: 'lupa',
+            width: 26,
+            heigth: 25
+        };
+
+        const imgElement = this.createImg(imgOptions);
+        this.buttonFilter.appendChild(imgElement);
+
         this.divButtonsControl = this.createElement('div', 'divButtonsControls');
         this.divButtonsControlFilter = this.createElement('div', 'divButtonsControlsFilter');
         this.categorias.forEach(e => {
@@ -119,6 +139,7 @@ export class TodoView {
         this.divFilterForm = this.createElement('div', 'div-filter-form');
         this.ul = this.createElement('ul', 'listTodos');
         this.list = this.createElement('li', 'listTODOS');
+        this.h1Table = this.createElement('h1', 'titleTodo');
         this.tableContainer = this.createElement('div', 'tableContainer');
         this.table = this.createElement('table', 'table');
     }
@@ -135,15 +156,14 @@ export class TodoView {
         this.divForm.append(this.titleApp, this.divTodo);
         this.form.append(this.divForm);
         this.root.append(this.form);
-        this.app.append(this.root);
+        this.divAppGrid.append(this.root);
+        this.app.append(this.divAppGrid);
     }
 
     //Inicializamos los eventos
     bindEventsHandlers() {
         this.bindDisplayButtonsCategory();
-        // this.bindDisplayFilter();
-        // this.bindFilterTodos();
-        // this.closeFilter();
+        this.createTable();
     }
 
     public isFilter: boolean = false;
@@ -170,6 +190,18 @@ export class TodoView {
             newElement.classList.add(className);
         }
         return newElement;
+    }
+
+
+    //Creacion de imagen en el button Filter
+    createImg(option: ImageOptions): HTMLImageElement {
+        const img = this.createElement('img', 'imgLupa') as HTMLImageElement;
+        img.src = option.src;
+        img.alt = option.alt;
+        if (option.width) img.width = option.width;
+        if (option.heigth) img.height = option.heigth;
+
+        return img;
     }
 
     //Pasamos los datos de el form para crear un Todo
@@ -221,14 +253,16 @@ export class TodoView {
         this.divFormFilter.append(this.exitFilter, this.h1Title, this.formFilter);
     }
 
+
     /*****  Primero hare el filtrado por botones de las categorias  *****/
     /**** Luego hare el filtrado por input ****/
     bindDisplayFilter(todos: ModelTodo[]) {
         //Funcion para mostrar todos los todos actuales
         this.form.addEventListener('click', (event) => {
-            // this.bindShowAllTodosFilter();
+            console.log(event.target)
             const buttonFilter = (event.target as HTMLElement).className === 'buttonFilter';
-            if (buttonFilter) {
+            const imgFilter = (event.target as HTMLElement).className === 'imgLupa';
+            if (buttonFilter || imgFilter) {
                 this.buildButtonsfilter();
                 this.form.classList.add('displayDivTodo');
                 this.divFormFilter.style.display = 'block';
@@ -245,7 +279,6 @@ export class TodoView {
     //Funcion para ejecutar el filter
     bindFilterTodos(todos: ModelTodo[]) {
         this.divButtonsControlFilter.addEventListener('click', (event) => {
-            console.log('hola');
             event.preventDefault();
             const buttonFilter = (event.target as HTMLElement).className === 'button-filter-categories';
             if (buttonFilter) {
@@ -269,6 +302,12 @@ export class TodoView {
             this.divFormFilter.style.display = 'none';
             this.displayTodo(todos, false);
         });
+    }
+
+    createTable() {
+        // this.h1Table.textContent = "Todo's";
+        this.tableContainer.append(this.h1Table, this.table);
+        this.divAppGrid.append(this.tableContainer);
     }
 
 
@@ -308,8 +347,8 @@ export class TodoView {
 
             Object.keys(arr[0]).forEach(index => {
                 if ((index != 'id')) {
-                    if (index != 'delete') {
-                        let th = document.createElement('th');
+                    let th = document.createElement('th');
+                    if (!isFilter && index != 'delete') {
                         th.textContent = index;
                         tr.appendChild(th);
                     }
@@ -369,7 +408,8 @@ export class TodoView {
 
             this.table.append(thead, newTbody);
             this.tableContainer.append(this.table);
-            this.app.append(this.tableContainer);
+            this.divAppGrid.append(this.tableContainer);
+            this.app.append(this.divAppGrid);
         }
     }
 
