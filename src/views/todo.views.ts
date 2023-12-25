@@ -348,7 +348,10 @@ export class TodoView {
             Object.keys(arr[0]).forEach(index => {
                 if ((index != 'id')) {
                     let th = document.createElement('th');
-                    if (!isFilter && index != 'delete') {
+                    if (isFilter && index != 'delete') {
+                        th.textContent = index;
+                        tr.appendChild(th);
+                    } else if (!isFilter) {
                         th.textContent = index;
                         tr.appendChild(th);
                     }
@@ -363,7 +366,7 @@ export class TodoView {
                         let td = document.createElement('td');
                         let input = document.createElement('input') as HTMLInputElement;
 
-                        if (clave === 'complete') {
+                        if (clave === 'complete' && !isFilter) {
                             input.type = 'checkbox';
                             input.checked = e[clave];
                             input.id = e.id;
@@ -375,7 +378,7 @@ export class TodoView {
                             buttonDelete.classList.add('btn', 'btn-delete');
                             buttonDelete.id = e.id;
                             td.append(buttonDelete);
-                        } else if (clave === 'text') {
+                        } else if (clave === 'text' && !isFilter) {
                             td.textContent = e[clave];
                             td.contentEditable = 'true';
                             td.id = e.id;
@@ -383,6 +386,9 @@ export class TodoView {
                                 td.classList.add('completed');
                             }
                         } else {
+                            if (e.complete) {
+                                td.classList.add('completed');
+                            }
                             td.textContent += e[clave];
                         }
 
