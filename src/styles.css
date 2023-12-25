@@ -127,6 +127,12 @@ body {
   justify-content: center;
 }
 
+input[type="checkbox"] {
+  accent-color: #00DC82;
+  transform: scale(1.1);
+  border: none;
+}
+
 .buttonDelete {
   cursor: pointer;
   font-size: 15px;
