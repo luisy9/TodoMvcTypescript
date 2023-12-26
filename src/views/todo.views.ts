@@ -53,7 +53,8 @@ export class TodoView {
     public divButtonsControlFilter: HTMLElement;
     public buttonCategoria: HTMLInputElement;
     public buttonCategoriaFilter: HTMLElement;
-    public categorieName: string = '';
+    public categorieName: Array<string> = [];
+    // public categorieName: string = '';
 
     //Array de objetos de Categorias
     public categorias: categories[] = [
@@ -181,7 +182,9 @@ export class TodoView {
     }
 
     _resetCheckBox() {
-        return this.buttonCategoria.checked = false;
+        const checkbox = document.getElementsByClassName('checkCategorie');
+        // return checkbo
+        // return this.buttonCategoria.checked = false;
     }
 
     createElement(elemnt: string, className: string) {
@@ -208,9 +211,12 @@ export class TodoView {
     bindSubmitForm(handler: Function = () => { }) {
         this.form.addEventListener('submit', event => {
             event.preventDefault();
-            if ((this._inputValue.length > 0) && (this._categoryName.length > 0)) {
+
+            if ((this._inputValue.length > 0) && (this._categoryName.length === 1)) {
                 handler({ text: this._inputValue, categoria: this._categoryName });
                 this._resetInput();
+                this._resetCheckBox();
+            } else {
                 this._resetCheckBox();
             }
         })
@@ -220,13 +226,10 @@ export class TodoView {
         this.divButtonsControl.addEventListener('change', (event) => {
             const isInputCheck = (event.target as HTMLInputElement).type;
             if (isInputCheck === 'checkbox') {
-                const isChecked = ((event.currentTarget as HTMLInputElement).type === 'checkbox');
-                if (!isChecked) {
-                    const categorie = (event.target as HTMLInputElement).id;
-                    this.categorieName = categorie;
-                } else {
-                    this.categorieName = '';
-                }
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                const arrayCheckboxes = Array.from(checkboxes);
+                const checkboxesMarcados = arrayCheckboxes.filter(e => (e as HTMLInputElement).checked);
+                this.categorieName = checkboxesMarcados.map(e => (e as HTMLInputElement).id);
             }
         })
     }
@@ -259,7 +262,6 @@ export class TodoView {
     bindDisplayFilter(todos: ModelTodo[]) {
         //Funcion para mostrar todos los todos actuales
         this.form.addEventListener('click', (event) => {
-            console.log(event.target)
             const buttonFilter = (event.target as HTMLElement).className === 'buttonFilter';
             const imgFilter = (event.target as HTMLElement).className === 'imgLupa';
             if (buttonFilter || imgFilter) {
@@ -268,7 +270,6 @@ export class TodoView {
                 this.divFormFilter.style.display = 'block';
                 this.displayTodo(todos, true);
 
-                // this.formFilter.append(this.h1Title, this.divFilterForm);
                 this.closeFilter(todos);
                 this.bindFilterTodos(todos);
                 this.root.append(this.divFormFilter);
