@@ -74,7 +74,7 @@ export class TodoView {
 
     constructor() {
         //Inicializar Elementos
-        this.initializedElements();
+        this.initializeElements();
         //Configuramos el UI
         this.setupUI();
         //Inicializamos los eventos
@@ -83,7 +83,7 @@ export class TodoView {
     }
 
     //Inicializar Elementos
-    initializedElements() {
+    initializeElements(): any {
         this.app = document.getElementById('root');
         this.divAppGrid = this.createElement('div', 'div-app-grid');
         this.root = this.createElement('div', 'div-app');
@@ -162,39 +162,37 @@ export class TodoView {
     }
 
     //Inicializamos los eventos
-    bindEventsHandlers() {
+    bindEventsHandlers(): any {
         this.bindDisplayButtonsCategory();
         this.createTable();
     }
 
+    //Variable para almacenar si estamos en modo filter o no
     public isFilter: boolean = false;
 
-    get _inputValue() {
+    //Funcion para devolver el input value
+    get _inputValue(): string {
         return this.input.value;
     }
 
-    get _categoryName() {
+    //Funcion para devolver el array de buttons checked
+    get _categoryName(): Array<string> {
         return this.categorieName;
     }
 
-    _resetInput() {
+    //Funcion para resetear input
+    _resetInput(): string {
         return this.input.value = '';
     }
 
-    _resetCheckBox() {
-        const checkbox = document.getElementsByClassName('checkCategorie');
-        // return checkbo
-        // return this.buttonCategoria.checked = false;
-    }
-
-    createElement(elemnt: string, className: string) {
+    //Funcion para crear nuevo HTMLElement
+    createElement(elemnt: string, className: string): HTMLElement {
         const newElement = document.createElement(elemnt);
         if (className) {
             newElement.classList.add(className);
         }
         return newElement;
     }
-
 
     //Creacion de imagen en el button Filter
     createImg(option: ImageOptions): HTMLImageElement {
@@ -215,9 +213,6 @@ export class TodoView {
             if ((this._inputValue.length > 0) && (this._categoryName.length === 1)) {
                 handler({ text: this._inputValue, categoria: this._categoryName });
                 this._resetInput();
-                this._resetCheckBox();
-            } else {
-                this._resetCheckBox();
             }
         })
     }
@@ -306,7 +301,6 @@ export class TodoView {
     }
 
     createTable() {
-        // this.h1Table.textContent = "Todo's";
         this.tableContainer.append(this.h1Table, this.table);
         this.divAppGrid.append(this.tableContainer);
     }
